@@ -1,0 +1,13 @@
+version: '3' # Which version of Docker Compose to use
+services:
+  npr-database:
+    image: ${PROJECT}-database
+    container_name: ${PROJECT}-database
+    hostname: ${PROJECT}-database
+    environment:
+      - POSTGRES_USER=${DBUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+    ports:
+    - "127.0.0.1:5432:5432"
+
+# TODO: podman cannot handle 127.0.0.1:5432:5432
