@@ -52,6 +52,9 @@ database-drop: database-up ## delete project's database (NON-RECOVERABLE)
 database-configure: | database-drop database-create ## configure project's database
 	@psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < ./NPRs/create_db.sql
 
+database-populate: | database-configure ## populate project's database with global records
+	@psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < ./NPRs/insert_db_records.sql
+
 database-populate-%:
 	@cd ./NPRs/$* && \
 		psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < $(*)_insert.sql

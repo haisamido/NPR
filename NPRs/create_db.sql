@@ -3,7 +3,7 @@
 CREATE SCHEMA IF NOT EXISTS NPR AUTHORIZATION postgres;
 SET search_path TO public,npr;
 
-CREATE TABLE npr.mission_classes (
+CREATE TABLE mission_classes (
   id SERIAL PRIMARY KEY,
   mission_class TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
@@ -11,7 +11,7 @@ CREATE TABLE npr.mission_classes (
   comment TEXT
 );
 
-CREATE TABLE npr.requirement_names (
+CREATE TABLE requirement_names (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
@@ -19,15 +19,15 @@ CREATE TABLE npr.requirement_names (
   comment TEXT
 );
 
-CREATE TABLE npr.software_classes (
+CREATE TABLE software_classifications (
   id SERIAL PRIMARY KEY,
-  software_class TEXT NOT NULL UNIQUE,
+  software_classification TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
   description TEXT,
   comment TEXT
 );
 
-CREATE TABLE npr.software_class_authorities (
+CREATE TABLE software_class_authorities (
   id SERIAL PRIMARY KEY,
   software_class_authority TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
@@ -35,17 +35,17 @@ CREATE TABLE npr.software_class_authorities (
   comment TEXT 
 );
 
-CREATE TABLE npr.npr_sections (
+CREATE TABLE sections (
   id SERIAL PRIMARY KEY,
-  npr_section TEXT NOT NULL UNIQUE,
+  section TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
   description TEXT,
   comment TEXT
 );
 
-CREATE TABLE npr.compliances (
+CREATE TABLE requirement_compliances (
   id SERIAL PRIMARY KEY,
-  compliance TEXT NOT NULL UNIQUE,
+  requirement_compliance TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
   description TEXT,
   comment TEXT
