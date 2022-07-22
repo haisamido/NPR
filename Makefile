@@ -23,20 +23,34 @@ export DBPASSWORD = postgres
 export PGPASSWORD = $(DBPASSWORD)
 export DBPORT     = 5432
 
-DIRECTORIES=$(CONTAINER_ENGINE)
-
 directories:
 	@mkdir -p $(CONTAINER_ENGINE)
 
-pull-db: directories ## pull database from registry
+database-pull: directories ## pull database engine from registry
 	@$(CONTAINER_ENGINE) pull $(DBIMAGE)
 
-database-build: pull-db ## build database image
+database-build: database-pull ## build database engine image
 	@$(CONTAINER_ENGINE) tag $(DBIMAGE) $(DBTAG)
 
 database-up: | database-build ## bring database engine up
 	@cd ./$(CONTAINER_ENGINE) && \
-	DOCKER_BUILDKIT=1 $(CONTAINER_ENGINE)-compose up -d $(PROJECT)-database
+	$(CONTAINER_ENGINE)-compose up -d $(PROJECT)-database
+
+database-down: ## bring database engine down
+	@cd ./docker && \
+	$(CONTAINER_ENGINE)-compose down
+
+database-create: database-up ## create project's database schemas
+	@sleep 2
+	@psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -tc "SELECT 1 FROM pg_database WHERE datname = '$(DB)'" \
+		| grep -q 1 || psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -c "CREATE DATABASE $(DB);"
+
+database-drop: database-up ## delete project's database (NON-RECOVERABLE)
+	@sleep 3
+	@psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -c "DROP DATABASE IF EXISTS $(DB) WITH (FORCE);"
+
+database-configure: | database-drop database-create ## configure project's database
+	@psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < ./NPRs/create_db.sql
 
 clean:
 	$(CONTAINER_ENGINE) rm -f $(DBTAG)
