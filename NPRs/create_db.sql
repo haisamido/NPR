@@ -11,9 +11,40 @@ CREATE TABLE mission_classes (
   comment TEXT
 );
 
-CREATE TABLE requirement_names (
+CREATE TABLE requirement_documents (
   id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE,
+  requirement_document TEXT NOT NULL UNIQUE,
+  effective_date DATE NOT NULL,
+  expiration_date DATE NOT NULL,
+  metadata jsonb NOT NULL default '{}'::jsonb,
+  description TEXT,
+  comment TEXT
+);
+
+CREATE TABLE requirement_document_sections (
+  id SERIAL PRIMARY KEY,
+  requirement_document TEXT NOT NULL, FOREIGN KEY (requirement_document) REFERENCES public.requirement_documents (requirement_document),
+  requirement_document_parent_section TEXT NULL UNIQUE,
+  requirement_document_section TEXT NOT NULL UNIQUE,
+  requirement_document_text TEXT NOT NULL UNIQUE,
+  metadata jsonb NOT NULL default '{}'::jsonb,
+  description TEXT,
+  comment TEXT,
+
+  UNIQUE(requirement_document,requirement_document_section,requirement_document_text)
+);
+
+CREATE TABLE requirements_in_document (
+  id SERIAL PRIMARY KEY,
+  requirement_in_document TEXT NOT NULL UNIQUE,
+  metadata jsonb NOT NULL default '{}'::jsonb,
+  description TEXT,
+  comment TEXT
+);
+
+CREATE TABLE requirement_compliances (
+  id SERIAL PRIMARY KEY,
+  requirement_compliance TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
   description TEXT,
   comment TEXT
@@ -34,20 +65,3 @@ CREATE TABLE software_class_authorities (
   description TEXT,
   comment TEXT 
 );
-
-CREATE TABLE sections (
-  id SERIAL PRIMARY KEY,
-  section TEXT NOT NULL UNIQUE,
-  metadata jsonb NOT NULL default '{}'::jsonb,
-  description TEXT,
-  comment TEXT
-);
-
-CREATE TABLE requirement_compliances (
-  id SERIAL PRIMARY KEY,
-  requirement_compliance TEXT NOT NULL UNIQUE,
-  metadata jsonb NOT NULL default '{}'::jsonb,
-  description TEXT,
-  comment TEXT
-);
-

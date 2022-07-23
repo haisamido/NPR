@@ -55,12 +55,13 @@ database-configure: | database-drop database-create ## configure project's datab
 database-populate: | database-configure ## populate project's database with global records
 	@psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < ./NPRs/insert_db_records.sql
 
-database-populate-%:
+database-populate-%: ## populate NPR specific database records
 	@cd ./NPRs/$* && \
 		psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < $(*)_insert.sql
 
 clean:
-	$(CONTAINER_ENGINE) rm -f $(DBTAG)
+	$(CONTAINER_ENGINE) rm -f $(DBTAG) && \
+	yes | $(CONTAINER_ENGINE) system prune -a
 
 .PHONY: help
 
