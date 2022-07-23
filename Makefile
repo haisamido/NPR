@@ -26,7 +26,7 @@ export DBPORT     = 5432
 directories:
 	@mkdir -p $(CONTAINER_ENGINE)
 
-database-pull: directories ## pull database engine from registry
+database-pull: ## pull database engine from registry
 	@$(CONTAINER_ENGINE) pull $(DBIMAGE)
 
 database-build: database-pull ## build database engine image
@@ -60,7 +60,7 @@ database-populate-%: ## populate NPR specific database records
 		psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < $(*)_insert.sql
 
 clean:
-	$(CONTAINER_ENGINE) rm -f $(DBTAG) && \
+	$(CONTAINER_ENGINE) rm -f $(DBTAG) 2> /dev/null; \
 	yes | $(CONTAINER_ENGINE) system prune -a
 
 .PHONY: help
