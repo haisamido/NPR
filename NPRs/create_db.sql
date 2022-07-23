@@ -24,14 +24,19 @@ CREATE TABLE requirement_documents (
 CREATE TABLE requirement_document_sections (
   id SERIAL PRIMARY KEY,
   requirement_document TEXT NOT NULL, FOREIGN KEY (requirement_document) REFERENCES public.requirement_documents (requirement_document),
-  requirement_document_parent_section TEXT NULL UNIQUE,
   requirement_document_section TEXT NOT NULL UNIQUE,
   requirement_document_text TEXT NOT NULL UNIQUE,
   metadata jsonb NOT NULL default '{}'::jsonb,
   description TEXT,
   comment TEXT,
-
   UNIQUE(requirement_document,requirement_document_section,requirement_document_text)
+);
+
+CREATE TABLE requirement_document_section_hierarchy (
+  requirement_document TEXT NOT NULL, FOREIGN KEY (requirement_document) REFERENCES public.requirement_documents (requirement_document),
+  requirement_document_parent_section TEXT NOT NULL, FOREIGN KEY (requirement_document_parent_section) REFERENCES public.requirement_document_sections (requirement_document_section),
+  requirement_document_section TEXT NOT NULL, FOREIGN KEY (requirement_document_section) REFERENCES public.requirement_document_sections (requirement_document_section),
+  UNIQUE(requirement_document,requirement_document_parent_section,requirement_document_section)
 );
 
 CREATE TABLE requirements_in_document (
