@@ -14,7 +14,7 @@ TAG = $(PROJECT)
 
 # Database Configurations
 DBTAG     = $(TAG)-database
-DBVERSION = 13
+DBVERSION = 14
 DBIMAGE   = docker.io/library/postgres:$(DBVERSION)
 
 export DBHOST     = localhost
@@ -33,11 +33,11 @@ database-build: database-pull ## build database engine image
 	@$(CONTAINER_ENGINE) tag $(DBIMAGE) $(DBTAG)
 
 database-up: | database-build ## bring database engine up
-	@cd ./$(CONTAINER_ENGINE) && \
+	@cd ./containerizations/$(CONTAINER_ENGINE) && \
 	$(CONTAINER_ENGINE)-compose up -d $(PROJECT)-database
 
 database-down: ## bring database engine down
-	@cd ./$(CONTAINER_ENGINE) && \
+	@cd ./containerizations/$(CONTAINER_ENGINE) && \
 	$(CONTAINER_ENGINE)-compose down
 
 database-create: database-up ## create project's database schemas
@@ -59,9 +59,12 @@ database-populate-%: ## populate NPR specific database records
 	@cd ./NPRs/$* && \
 		psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < $(*)_insert.sql
 
-7150.2D: ## create NPR 7150.2D database records
-	$(MAKE) --silent clean database-populate database-populate-7150.2D CONTAINER_ENGINE=$(CONTAINER_ENGINE) && \
-	echo "Created NPR 7150.2D database records"
+create-7150.2D-podman: ## podamn: create NPR 7150.2D database records
+create-7150.2D-docker: ## docker: create NPR 7150.2D database records
+
+create-7150.2D-%:
+	$(MAKE) --silent clean database-populate database-populate-7150.2D CONTAINER_ENGINE=$(*) && \
+	echo "In $(*) created NPR 7150.2D database records"
 
 clean-%:
 	@$(*) rm -f $(DBTAG) 2> /dev/null; \
