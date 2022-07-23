@@ -33,6 +33,7 @@ CREATE TABLE requirement_document_sections (
 );
 
 CREATE TABLE requirement_document_section_hierarchy (
+  id SERIAL PRIMARY KEY,
   requirement_document TEXT NOT NULL, FOREIGN KEY (requirement_document) REFERENCES public.requirement_documents (requirement_document),
   requirement_document_parent_section TEXT NOT NULL, FOREIGN KEY (requirement_document_parent_section) REFERENCES public.requirement_document_sections (requirement_document_section),
   requirement_document_section TEXT NOT NULL, FOREIGN KEY (requirement_document_section) REFERENCES public.requirement_document_sections (requirement_document_section),
