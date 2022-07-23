@@ -59,13 +59,19 @@ database-populate-%: ## populate NPR specific database records
 	@cd ./NPRs/$* && \
 		psql -h $(DBHOST) -U $(DBUSER) -p $(DBPORT) -d $(DB) < $(*)_insert.sql
 
-clean:
-	$(CONTAINER_ENGINE) rm -f $(DBTAG) 2> /dev/null; \
-	yes | $(CONTAINER_ENGINE) system prune -a
+7150.2D: ## create NPR 7150.2D database records
+	$(MAKE) --silent clean database-populate database-populate-7150.2D CONTAINER_ENGINE=$(CONTAINER_ENGINE) && \
+	echo "Created NPR 7150.2D database records"
+
+clean-%:
+	@$(*) rm -f $(DBTAG) 2> /dev/null; \
+	yes | $(*) system prune -a 2> /dev/null;
+
+clean: clean-docker clean-podman
 
 .PHONY: help
 
-help: ## That's me!
+help:
 	@printf "\033[37m%-30s\033[0m %s\n" "#----------------------------------------------------------------------------------"
 	@printf "\033[37m%-30s\033[0m %s\n" "# Makefile targets                          |"
 	@printf "\033[37m%-30s\033[0m %s\n" "#----------------------------------------------------------------------------------"
