@@ -12,4 +12,3 @@ INSERT INTO requirement_compliances (requirement_compliance,description) VALUES 
 INSERT INTO requirement_compliances (requirement_compliance,description) VALUES ('T','Tailored');
 INSERT INTO requirement_compliances (requirement_compliance,description) VALUES ('NA','Not Applicable');
 INSERT INTO requirement_compliances (requirement_compliance,description) VALUES ('W','Waiver');
-
