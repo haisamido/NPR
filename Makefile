@@ -37,7 +37,7 @@ database-up: | database-build ## bring database engine up
 	$(CONTAINER_ENGINE)-compose up -d $(PROJECT)-database
 
 database-down: ## bring database engine down
-	@cd ./docker && \
+	@cd ./$(CONTAINER_ENGINE) && \
 	$(CONTAINER_ENGINE)-compose down
 
 database-create: database-up ## create project's database schemas
